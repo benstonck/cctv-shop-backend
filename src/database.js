@@ -40,6 +40,14 @@ function initializeDatabase() {
     )
   `);
 
+  // ✅ ADD THIS FIX (IMPORTANT)
+  try {
+    db.exec(`ALTER TABLE products ADD COLUMN image TEXT;`);
+    console.log("✅ 'image' column added");
+  } catch (err) {
+    console.log("ℹ️ 'image' column already exists");
+  }
+
   // Invoices table
   db.exec(`
     CREATE TABLE IF NOT EXISTS invoices (
