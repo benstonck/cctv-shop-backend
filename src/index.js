@@ -32,7 +32,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded images statically
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// ✅ Serve uploaded images
+const uploadsPath = path.resolve(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
