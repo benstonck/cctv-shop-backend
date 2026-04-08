@@ -30,29 +30,20 @@ const PORT = process.env.PORT || 5001;
 //   })
 // );
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+// ─── Middleware ─────────────────────────────────────────────
 
-      if (
-        origin.includes("vercel.app") ||
-        origin.includes("localhost")
-      ) {
-        return callback(null, true);
-      }
+// ✅ CORS
+app.use(cors());
 
-      return callback(null, true); // ✅ allow all (for now)
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// ✅ Handle preflight
+app.options("*", cors());
+
+// ✅ Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ✅ VERY IMPORTANT (this line missing in your code)
 app.options("*", cors());
-
 
 
 // Serve uploaded images statically
