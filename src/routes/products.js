@@ -85,15 +85,16 @@ router.post('/', authenticateToken, upload.single('image'), (req, res) => {
     return res.status(400).json({ success: false, message: 'Product name and base price are required.' });
   }
 
-  const imageFilename = req.file ? req.file.filename : null;
+  // const imageFilename = req.file ? req.file.filename : null;
+  const image = req.file ? req.file.filename : null;
 
   const result = db.prepare(`
-    INSERT INTO products (name, description, image_url, base_price, gst_percentage, hsn_code, unit, stock_quantity)
+    INSERT INTO products (name, description, image, base_price, gst_percentage, hsn_code, unit, stock_quantity)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     name,
     description || '',
-    imageFilename,
+    image,
     parseFloat(base_price),
     parseFloat(gst_percentage) || 18,
     hsn_code || '',
@@ -104,13 +105,18 @@ router.post('/', authenticateToken, upload.single('image'), (req, res) => {
   const product = db.prepare('SELECT * FROM products WHERE id = ?').get(result.lastInsertRowid);
   const baseUrl = `${req.protocol}://${req.get('host')}`;
 
+  // ✅ Convert filename → full URL only in response
+  const productWithImage = {
+    ...product,
+    image: product.image
+      ? `${baseUrl}/uploads/${product.image}`
+      : null,
+  };
+
   res.status(201).json({
     success: true,
     message: 'Product created successfully.',
-    product: {
-      ...product,
-      image_url: product.image_url ? `${baseUrl}/uploads/${product.image_url}` : null,
-    },
+    product: productWithImage,
   });
 });
 
