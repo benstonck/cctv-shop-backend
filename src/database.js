@@ -41,12 +41,24 @@ function initializeDatabase() {
   `);
 
   // ✅ ADD THIS FIX (IMPORTANT)
-  try {
-    db.exec(`ALTER TABLE products ADD COLUMN image TEXT;`);
-    console.log("✅ 'image' column added");
-  } catch (err) {
-    console.log("ℹ️ 'image' column already exists");
-  }
+  // try {
+  //   db.exec(`ALTER TABLE products ADD COLUMN image TEXT;`);
+  //   console.log("✅ 'image' column added");
+  // } catch (err) {
+  //   console.log("ℹ️ 'image' column already exists");
+  // }
+
+  // ✅ SAFE CHECK BEFORE ALTER (IMPORTANT)
+const columns = db.prepare(`PRAGMA table_info(products)`).all();
+
+const hasImageColumn = columns.some(col => col.name === 'image');
+
+if (!hasImageColumn) {
+  db.exec(`ALTER TABLE products ADD COLUMN image TEXT;`);
+  console.log("✅ 'image' column added");
+} else {
+  console.log("ℹ️ 'image' column already exists");
+}
 
   // Invoices table
   db.exec(`
