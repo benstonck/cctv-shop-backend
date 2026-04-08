@@ -14,10 +14,20 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+//   credentials: true,
+// }));
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://cctv-shop-fe.vercel.app', // your main domain
+      'https://cctv-shop-33htqhrdv-benston.vercel.app' // preview domain
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
