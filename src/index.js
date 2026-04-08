@@ -18,13 +18,33 @@ const PORT = process.env.PORT || 5001;
 //   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
 //   credentials: true,
 // }));
+
+// app.use(
+//   cors({
+//     origin: [
+//       'http://localhost:3000',
+//       'https://cctv-shop-fe.vercel.app', // your main domain
+//       'https://cctv-shop-33htqhrdv-benston.vercel.app' // preview domain
+//     ],
+//     credentials: true,
+//   })
+// );
+
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'https://cctv-shop-fe.vercel.app', // your main domain
-      'https://cctv-shop-33htqhrdv-benston.vercel.app' // preview domain
-    ],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      // Allow all vercel domains
+      if (
+        origin.includes("vercel.app") ||
+        origin.includes("localhost")
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
