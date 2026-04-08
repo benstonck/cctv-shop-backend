@@ -35,7 +35,6 @@ app.use(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
-      // Allow all vercel domains
       if (
         origin.includes("vercel.app") ||
         origin.includes("localhost")
@@ -43,13 +42,18 @@ app.use(
         return callback(null, true);
       }
 
-      return callback(new Error("Not allowed by CORS"));
+      return callback(null, true); // ✅ allow all (for now)
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// ✅ VERY IMPORTANT (this line missing in your code)
+app.options("*", cors());
+
+
 
 // Serve uploaded images statically
 // app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
