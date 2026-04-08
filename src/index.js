@@ -11,7 +11,7 @@ const pdfRoutes = require('./routes/pdf');
 const settingsRoutes = require('./routes/settings');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 // app.use(cors({
@@ -81,8 +81,9 @@ app.use((err, req, res, next) => {
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 initializeDatabase();
-app.listen(PORT, () => {
-  console.log(`\n🚀 CCTV Shop API running at http://localhost:${PORT}`);
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 CCTV Shop API running on port ${PORT}`);
   console.log(`📦 API Endpoints:`);
   console.log(`   POST   /api/auth/login`);
   console.log(`   GET    /api/products`);
