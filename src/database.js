@@ -29,7 +29,7 @@ function initializeDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       description TEXT,
-      image_url TEXT,
+      image TEXT,
       base_price REAL NOT NULL,
       gst_percentage REAL NOT NULL DEFAULT 18,
       hsn_code TEXT,
