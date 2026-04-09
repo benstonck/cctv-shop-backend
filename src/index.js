@@ -50,7 +50,9 @@ app.options("*", cors());
 // app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // ✅ Serve uploaded images
-const uploadsPath = path.resolve(__dirname, '../uploads');
+const uploadsPath = path.join(process.cwd(), 'uploads');app.use('/uploads', express.static(uploadsPath));
+console.log("Uploads path:", uploadsPath);
+// ✅ serve static files
 app.use('/uploads', express.static(uploadsPath));
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
