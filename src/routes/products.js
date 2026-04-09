@@ -56,7 +56,7 @@ router.get('/', authenticateToken, (req, res) => {
   const baseUrl = `${req.protocol}://${req.get('host')}`;
   const productsWithUrl = products.map(p => ({
     ...p,
-    image_url: p.image_url ? `${baseUrl}/uploads/${p.image_url}` : null,
+    image: p.image ? `${baseUrl}/uploads/${p.image}` : null,
   }));
 
   res.json({ success: true, products: productsWithUrl, total, page: parseInt(page), limit: parseInt(limit) });
@@ -72,7 +72,7 @@ router.get('/:id', authenticateToken, (req, res) => {
     success: true,
     product: {
       ...product,
-      image_url: product.image_url ? `${baseUrl}/uploads/${product.image_url}` : null,
+      image: product.image ? `${baseUrl}/uploads/${product.image}` : null,
     },
   });
 });
@@ -128,10 +128,10 @@ router.put('/:id', authenticateToken, upload.single('image'), (req, res) => {
   const { name, description, base_price, gst_percentage, hsn_code, unit, stock_quantity } = req.body;
 
   // If new image uploaded, delete old one
-  let imageFilename = product.image_url;
+  let imageFilename = product.image;
   if (req.file) {
-    if (product.image_url) {
-      const oldPath = path.join(__dirname, '../../uploads', product.image_url);
+    if (product.image) {
+      const oldPath = path.join(__dirname, '../../uploads', product.image);
       if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
     }
     imageFilename = req.file.filename;
@@ -139,7 +139,7 @@ router.put('/:id', authenticateToken, upload.single('image'), (req, res) => {
 
   db.prepare(`
     UPDATE products
-    SET name = ?, description = ?, image_url = ?, base_price = ?, gst_percentage = ?,
+    SET name = ?, description = ?, image = ?, base_price = ?, gst_percentage = ?,
         hsn_code = ?, unit = ?, stock_quantity = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `).run(
@@ -162,7 +162,7 @@ router.put('/:id', authenticateToken, upload.single('image'), (req, res) => {
     message: 'Product updated successfully.',
     product: {
       ...updated,
-      image_url: updated.image_url ? `${baseUrl}/uploads/${updated.image_url}` : null,
+      image: updated.image ? `${baseUrl}/uploads/${updated.image}` : null,
     },
   });
 });
@@ -173,8 +173,8 @@ router.delete('/:id', authenticateToken, (req, res) => {
   if (!product) return res.status(404).json({ success: false, message: 'Product not found.' });
 
   // Delete product image
-  if (product.image_url) {
-    const imgPath = path.join(__dirname, '../../uploads', product.image_url);
+  if (product.image) {
+    const imgPath = path.join(__dirname, '../../uploads', product.image);
     if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
   }
 
